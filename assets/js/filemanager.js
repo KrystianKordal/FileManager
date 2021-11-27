@@ -2,6 +2,6 @@ document.addEventListener("DOMContentLoaded", function() {
     fetch("/filemanager")
         .then(res => res.json())
         .then(res => {
-            console.log(res);
+            document.querySelector("#filemanager").innerHTML = res.rendered_content;
         });
 });

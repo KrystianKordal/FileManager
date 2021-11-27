@@ -1,0 +1,25 @@
+body {
+    font-family: Roboto, Arial, sans-serif;
+}
+
+#filemanager {
+    display: flex;
+}
+
+#filemanager .thumbnail img {
+    max-width: 100%;
+    height: 48px;
+}
+
+.file .filename {
+    text-align: center;
+}
+
+#filemanager .file {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 64px;
+    margin: 8px;
+    padding: 6px;
+}
