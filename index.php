@@ -11,7 +11,12 @@
     <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div id="filemanager"></div>
+    <div id="filemanager">
+        <div class="filemanager-header">
+            File Manager
+        </div>
+        <div class="filemanager-content"></div>
+    </div>
     <script src="/assets/js/filemanager.js"></script>
 </body>
 </html>

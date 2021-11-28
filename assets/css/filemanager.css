@@ -3,7 +3,31 @@ body {
 }
 
 #filemanager {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform :translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
+    max-height: 800px;
+    border: solid 1px #dddddd;
+    border-radius: 10px;
+    box-shadow: 5px 3px 20px #000000b0;
+    align-content: flex-start;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.filemanager-header {
+    padding: 12px;
+    border-bottom: solid 2px #ddd;
+    font-size: 18px;
+}
+
+.filemanager-content {
     display: flex;
+    flex-wrap: wrap;
+    width: 100%;
 }
 
 #filemanager .thumbnail img {
