@@ -21,6 +21,9 @@ class File
     /** @var string File thumbnail */
     public $thumbnail;
 
+    /** @var boolean Is file editable */
+    public $editable;
+
     /**
      * Class constructor
      * 
@@ -40,6 +43,7 @@ class File
         $this->size = filesize($path);
 
         $this->thumbnail = $this->getThumbnail();
+        $this->editable = $this->isEditable();
     }
 
     /**
@@ -47,15 +51,28 @@ class File
      * 
      * @return string Thumbnail src
      */
-    protected function getThumbnail() {
-        $thumbnails = array(
-            'jpg' => _IMG_PATH_ . 'image.png',
-            'png' => _IMG_PATH_ . 'image.png',
-            'webp' => _IMG_PATH_ . 'image.png',
-            'txt' => _IMG_PATH_ . 'document.png',
-        );
-
-        return $thumbnails[$this->ext];
+    protected function getThumbnail() : string
+    {
+        return _IMG_PATH_ . 'document.png';
     }
 
+    /**
+     * Returns whether the file is editable
+     * 
+     * @return bool Is file editable
+     */
+    protected function isEditable() : bool
+    {
+        return false;
+    }
+
+    /**
+     * Returns content from file
+     * 
+     * @return string File content
+     */
+    public function getContent() : string 
+    {
+        return "";
+    }
 }
