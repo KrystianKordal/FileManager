@@ -8,18 +8,25 @@ body {
 
 #filemanager .thumbnail img {
     max-width: 100%;
-    height: 48px;
+    height: 64px;
+    user-select: none;
 }
 
 .file .filename {
     text-align: center;
+    user-select: none;
 }
 
 #filemanager .file {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 64px;
+    width: 86px;
     margin: 8px;
     padding: 6px;
+    cursor: pointer;
+}
+
+#filemanager .file:hover {
+    background-color: #0000000d;
 }

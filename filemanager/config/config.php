@@ -10,3 +10,6 @@
     define('_HELPERS_DIR_', _SRC_DIR_ . 'helpers/');
     define('_TPL_DIR_', _APP_DIR_ . 'templates/');
     define('_FILES_DIR_', _ROOT_DIR_ . 'files/');
+
+    define('_ASSETS_PATH_', '/assets/');
+    define('_IMG_PATH_', _ASSETS_PATH_ . 'img/');

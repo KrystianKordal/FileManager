@@ -18,6 +18,9 @@ class File
     /** @var int File size in bytes */
     public $size;
 
+    /** @var string File thumbnail */
+    public $thumbnail;
+
     /**
      * Class constructor
      * 
@@ -32,8 +35,27 @@ class File
 
         $pathinfo = pathinfo($this->path);
         $this->ext = $pathinfo['extension'];
-        $this->name = $pathinfo['filename'];
+        $this->name = $file;
 
         $this->size = filesize($path);
+
+        $this->thumbnail = $this->getThumbnail();
     }
+
+    /**
+     * Returns thumbnail of file
+     * 
+     * @return string Thumbnail src
+     */
+    protected function getThumbnail() {
+        $thumbnails = array(
+            'jpg' => _IMG_PATH_ . 'image.png',
+            'png' => _IMG_PATH_ . 'image.png',
+            'webp' => _IMG_PATH_ . 'image.png',
+            'txt' => _IMG_PATH_ . 'document.png',
+        );
+
+        return $thumbnails[$this->ext];
+    }
+
 }
