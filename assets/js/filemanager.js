@@ -9,11 +9,9 @@ class Filemanager {
     }
 
     loadFiles() {
-        fetch("/filemanager")
-        .then(res => res.json())
-        .then(res => {
+        this.request(function(res) {
             document.querySelector(".filemanager-content").innerHTML = res.rendered_content;
-        });
+        }, "/filemanager");
     }
 
     initEventListeners() {
@@ -34,12 +32,22 @@ class Filemanager {
         if(element.dataset.editable == true) {
             let filename = element.dataset.file;
 
-            fetch(`/filemanager?loadContent=${filename}`)
-            .then(res => res.json())
-            .then(res => {
+            this.request( function(res) {
                 console.log(res);
-            });
+            }, `/filemanager?loadContent=${filename}`);
         }
+    }
+
+    request(callback, url) {
+        fetch(url)
+        .then(res => res.json())
+        .then(res => {
+            if(res.error) {
+                console.error(res.error);
+            } else {
+                callback(res);
+            }
+        });
     }
 }
 

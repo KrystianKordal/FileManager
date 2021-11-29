@@ -12,11 +12,19 @@
  * 
 */
 function get_template(string $file, array $args = array()) {
-    extract($args);
+    $filepath = _TPL_DIR_ . $file . ".php";
 
-    ob_start();
-    include(_TPL_DIR_ . $file . ".php");
-    $content = ob_get_contents();
-    ob_end_clean();
-    return $content;
+    if(file_exists($filepath)) {
+        extract($args);
+
+        ob_start();
+        include($filepath);
+        $content = ob_get_contents();
+        ob_end_clean();
+        
+        return $content;
+    } else {
+        return "";
+    }
+
 }
