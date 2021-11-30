@@ -98,13 +98,21 @@ class FileManager
      * @param string $filesPath Path to all files directory
      * @param string $filename Name of the file whose content is to be returned
      * 
-     * @return string File content
+     * @return array Array with file content error
      */
-    public function getFileContent(string $filesPath, string $filename) : string 
+    public function getFileContent(string $filesPath, string $filename) : array
     {
         $factory = new FileFactory();
         $file = $factory->createFile($filename, $filesPath);
 
-        return $file->getContent();
+        if($file === false) 
+            return array('error' => "File $file could not be instantiated");
+
+        $content = $file->getContent();
+
+        if($content === false)
+            return array('error' => "Cannot read content of $filename");
+
+        return $content;
     }
 }

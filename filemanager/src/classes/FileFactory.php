@@ -14,7 +14,7 @@ class FileFactory
      * 
      * @return File|bool File instance or false if file not exists
      */
-    public function createFile(string $file, string $path) : File
+    public function createFile(string $file, string $path)
     {
         $filepath = $path . '/' . $file;
         if(!file_exists($filepath))

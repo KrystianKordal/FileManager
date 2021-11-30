@@ -19,11 +19,15 @@ class TextFile extends File
     /**
      * Returns content from file
      * 
-     * @return string File content
+     * @return string|bool File content or false if file reading failed
      */
     public function getContent() : string
     {
         $file = fopen($this->path, 'r');
+
+        if($file === false) 
+            return false;
+            
         $content = fread($file, $this->size);
         fclose($file);
 
