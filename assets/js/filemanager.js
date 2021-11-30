@@ -9,9 +9,10 @@ class Filemanager {
     }
 
     loadFiles() {
-        this.request(function(res) {
-            document.querySelector(".filemanager-content").innerHTML = res.rendered_content;
-        }, "/filemanager");
+        this.get("/filemanager")
+            .then(function(res) {
+                document.querySelector(".filemanager-content").innerHTML = res.rendered_content;
+            });
     }
 
     initEventListeners() {
@@ -26,28 +27,80 @@ class Filemanager {
                 });
             }
         });
+
+        document.addEventListener('click',(e) => {
+            let files = document.querySelectorAll('.file');
+            if(e.target) {
+                    let saveFileButton = document.getElementById('save_file');
+                if(e.target == saveFileButton) {
+                    let content = document.getElementById('save_file').value;
+                    let file = saveFileButton.dataset.file;
+
+                    this.post('/filemanager?saveFile', {
+                        content: content,
+                        file: file
+                    });
+                }
+            }
+        });
     }
 
     loadContent(element) {
         if(element.dataset.editable == true) {
             let filename = element.dataset.file;
 
-            this.request( function(res) {
-                console.log(res);
-            }, `/filemanager?loadContent=${filename}`);
+            this.get(`/filemanager?loadContent=${filename}`)
+                .then(function(res) {
+                    document.querySelector('.filemanager-content').innerHTML = res.content;
+                });
         }
     }
 
-    request(callback, url) {
-        fetch(url)
+    async get(url) {
+        const response = await fetch(url)
         .then(res => res.json())
         .then(res => {
             if(res.error) {
                 console.error(res.error);
-            } else {
-                callback(res);
             }
+
+            return res;
         });
+
+        if(!response.error) {
+            return response;
+        } else {
+            return false;
+        }
+    }
+
+    async post(url, data = {}) {
+        const response = await fetch(url, {
+            method: 'POST',
+            mode: 'cors',
+            cache: 'no-cache',
+            credentials: 'same-origin',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            redirect: 'follow',
+            referrerPolicy: 'no-referrer',
+            body: JSON.stringify(data)
+        })
+        .then(res => res.json())
+        .then(res => {
+            if(res.error) {
+                console.error(res.error);
+            }
+
+            return res;
+        });
+
+        if(!response.error) {
+            return response;
+        } else {
+            return false;
+        }
     }
 }
 

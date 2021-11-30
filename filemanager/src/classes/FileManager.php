@@ -7,25 +7,31 @@
 
 class FileManager 
 {
+    /** @var string Path to main directory */
+    private $dirPath;
+
     /**
      * Class constructor
+     * 
+     * @param string $dirPath Path to main directory
      */
-    public function __construct() {}
+    public function __construct($dirPath) 
+    {
+        $this->dirPath = $dirPath;
+    }
 
     /**
      * Returns content of specific directory
      * 
-     * @param string $path The path of the directory whose contents are to be displayed
-     * 
      * @return array An associative array with rendered files list or error
      */
-    public function getDirContent(string $path) : array
+    public function getDirContent() : array
     {
-        $dirContent = $this->scanDir($path);
+        $dirContent = $this->scanDir($this->dirPath);
         if($dirContent === false)
             return array('error' => 'Scanning directory failed');
 
-        $nodes = $this->createFileNodes($dirContent, $path);
+        $nodes = $this->createFileNodes($dirContent, $this->dirPath);
         if(!is_array($nodes)) {
             return array('error' => "File $nodes could not be instantiated");
         }
@@ -39,17 +45,16 @@ class FileManager
      * Creates instances of File object
      * 
      * @param array $dirContent Array with names of file system nodes
-     * @param string $path Path to the directory whese these files are located
      * 
      * @return array|string Array with File instances or name of the file that failed to instantiate
      */
-    private function createFileNodes(array $dirContent, $path)
+    private function createFileNodes(array $dirContent)
     {
         $factory = new FileFactory();
 
         $nodes = array();
         foreach($dirContent as $filename) {
-            $node = $factory->createFile($filename, $path);
+            $node = $factory->createFile($filename, $this->dirPath);
 
             if($node === false)
                 return $filename;
@@ -63,15 +68,13 @@ class FileManager
     /**
      * Gets the content of a directory
      * 
-     * @param string $path Path to directory
-     * 
      * @return array|bool Array with names of file system nodes inside of directory or false if scanning dir failed
      */
-    private function scanDir(string $path)
+    private function scanDir()
     {
         set_error_handler(function() {});
 
-        $content = scandir($path);
+        $content = scandir($this->dirPath);
 
         restore_error_handler();
 
@@ -95,24 +98,56 @@ class FileManager
     /**
      * Returns content of specific file
      * 
-     * @param string $filesPath Path to all files directory
      * @param string $filename Name of the file whose content is to be returned
      * 
      * @return array Array with file content error
      */
-    public function getFileContent(string $filesPath, string $filename) : array
+    public function getFileContent(string $filename) : array
     {
-        $factory = new FileFactory();
-        $file = $factory->createFile($filename, $filesPath);
-
-        if($file === false) 
-            return array('error' => "File $file could not be instantiated");
+        $file = $this->createFileInstance($filename);
+        if(is_string($file)) 
+            return array('error' => $file);
 
         $content = $file->getContent();
 
         if($content === false)
             return array('error' => "Cannot read content of $filename");
 
-        return $content;
+        return array(
+            'content' => get_template('text_file_content', array(
+                'content' => $content,
+                'file' => $file
+            ))
+        );
+    }
+
+    /**
+     * Creates instance of file
+     */
+    private function createFileInstance($filename) {
+        $factory = new FileFactory();
+        $file = $factory->createFile($filename, $this->dirPath);
+
+        if($file === false) 
+            return "File $file could not be instantiated";
+        
+        return $file;
+    }
+
+    /**
+     * Saves content to file
+     * 
+     * @param string $filename Name of the file in which the content is to be written
+     * @param string $content Content to be saved to the file
+     * 
+     * @return bool true or false depending on the success of saving the content
+     */
+    public function saveFile(string $filename, string $content) : bool
+    {
+        $file = $this->createFileInstance($filename);
+        if(is_string($file)) 
+            return array('error' => $file);
+
+        return true;
     }
 }

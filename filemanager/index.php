@@ -9,10 +9,12 @@
 
     require_once(_HELPERS_DIR_ . 'template.php');
     
-    $fileManager = new FileManager();
+    $fileManager = new FileManager(_FILES_DIR_);
 
     if(isset($_GET['loadContent'])) {
-        echo json_encode($fileManager->getFileContent(_FILES_DIR_, $_GET['loadContent']));
+        echo json_encode($fileManager->getFileContent($_GET['loadContent']));
+    } else if(isset($_POST['saveFile'])) {
+        echo json_encode($fileManager->saveFile($_POST['file'], $_POST['content']));
     } else {
-        echo json_encode($fileManager->getDirContent(_FILES_DIR_));
+        echo json_encode($fileManager->getDirContent());
     }
