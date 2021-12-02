@@ -12,13 +12,13 @@ class FileFactory
      * @param string $file Name of file
      * @param string $path Path to file
      * 
-     * @return File|bool File instance or false if file not exists
+     * @return File|FMError File instance or FMError instance
      */
     public function createFile(string $file, string $path)
     {
         $filepath = $path . '/' . $file;
         if(!file_exists($filepath))
-            return false;
+            return new FMError("File $filepath doesn't exists");
 
         $extension = pathinfo($filepath)['extension'];
         if ($extension == 'txt') { 

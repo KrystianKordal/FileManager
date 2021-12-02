@@ -28,12 +28,12 @@ class FileManager
     public function getDirContent() : array
     {
         $dirContent = $this->scanDir($this->dirPath);
-        if($dirContent === false)
-            return array('error' => 'Scanning directory failed');
+        if($dirContent instanceof FMError)
+            return array('error' => $dirContent->message);
 
         $nodes = $this->createFileNodes($dirContent, $this->dirPath);
-        if(!is_array($nodes)) {
-            return array('error' => "File $nodes could not be instantiated");
+        if($nodes instanceof FMError) {
+            return array('error' => $nodes->message);
         }
 
         return array(
@@ -46,7 +46,7 @@ class FileManager
      * 
      * @param array $dirContent Array with names of file system nodes
      * 
-     * @return array|string Array with File instances or name of the file that failed to instantiate
+     * @return array|FMError Array with File instances or FMError instance if instantiate file object failed
      */
     private function createFileNodes(array $dirContent)
     {
@@ -56,8 +56,8 @@ class FileManager
         foreach($dirContent as $filename) {
             $node = $factory->createFile($filename, $this->dirPath);
 
-            if($node === false)
-                return $filename;
+            if($node instanceof FMError)
+                return $node;
             
             $nodes[] = $node;
         }
@@ -68,7 +68,7 @@ class FileManager
     /**
      * Gets the content of a directory
      * 
-     * @return array|bool Array with names of file system nodes inside of directory or false if scanning dir failed
+     * @return array|FMError Array with names of file system nodes inside of directory or FMError instance if scanning dir failed
      */
     private function scanDir()
     {
@@ -78,7 +78,7 @@ class FileManager
 
         restore_error_handler();
 
-        return $content !== false? $this->removeDotsDirs($content) : false;
+        return $content !== false? $this->removeDotsDirs($content) : new FMError("Cannot scan dir $this->dirPath");
     }
 
     /**
@@ -100,18 +100,18 @@ class FileManager
      * 
      * @param string $filename Name of the file whose content is to be returned
      * 
-     * @return array Array with file content error
+     * @return array|FMError Array with file content or FMError instance
      */
     public function getFileContent(string $filename) : array
     {
         $file = $this->createFileInstance($filename);
-        if(is_string($file)) 
-            return array('error' => $file);
+        if($file instanceof FMError) 
+            return $file;
 
         $content = $file->getContent();
 
-        if($content === false)
-            return array('error' => "Cannot read content of $filename");
+        if($content instanceof FMError)
+            return array('error' => $content->message);
 
         return array(
             'content' => get_template('text_file_content', array(
@@ -123,13 +123,17 @@ class FileManager
 
     /**
      * Creates instance of file
+     * 
+     * @param string $filename File of name to instantiate
+     * 
+     * @return File|FMError Instance of File class or FMError instance
      */
     private function createFileInstance($filename) {
         $factory = new FileFactory();
         $file = $factory->createFile($filename, $this->dirPath);
 
-        if($file === false) 
-            return "File $file could not be instantiated";
+        if($file instanceof FMError) 
+            return $file->message;
         
         return $file;
     }
@@ -145,8 +149,8 @@ class FileManager
     public function saveFile(string $filename, string $content) : bool
     {
         $file = $this->createFileInstance($filename);
-        if(is_string($file)) 
-            return array('error' => $file);
+        if($file instanceof FMError) 
+            return array('error' => $file->message);
 
         return true;
     }
