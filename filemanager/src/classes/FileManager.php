@@ -144,14 +144,18 @@ class FileManager
      * @param string $filename Name of the file in which the content is to be written
      * @param string $content Content to be saved to the file
      * 
-     * @return bool true or false depending on the success of saving the content
+     * @return bool|FMError true or FMError instance depending on the success of saving the content
      */
-    public function saveFile(string $filename, string $content) : bool
+    public function saveFile(string $filename, string $content)
     {
         $file = $this->createFileInstance($filename);
         if($file instanceof FMError) 
             return array('error' => $file->message);
 
-        return true;
+        $result = $file->save($content);
+
+        if($result instanceof FMError)
+            return array('error' => $result->message);
+        return array('success' => true);
     }
 }

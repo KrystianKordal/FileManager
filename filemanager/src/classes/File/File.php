@@ -75,4 +75,16 @@ class File
     {
         return "";
     }
+
+    /**
+     * Saves content in file
+     * 
+     * @param string $content New file content
+     * 
+     * @return bool|FMError True if saving was success full or FMError instance on failure
+     */
+    public function save(string $content) : bool 
+    {
+        return true;
+    }
 }

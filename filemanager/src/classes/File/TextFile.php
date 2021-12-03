@@ -39,9 +39,9 @@ class TextFile extends File
      * 
      * @param string $content New file content
      * 
-     * @return bool Wheter saving was successful
+     * @return bool|FMError True if saving was success full or FMError instance on failure
      */
-    public function saveContent(string $content) : bool 
+    public function save(string $content) : bool 
     {
         return true;
     }

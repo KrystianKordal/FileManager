@@ -1,5 +1,5 @@
 <?php
-    require_once(dirname(__FILE__) . '/config/config.php');
+    require_once(dirname(__FILE__) . '/config.php');
 
     require_once(_CLASS_DIR_ . 'File/File.php');
     require_once(_CLASS_DIR_ . 'File/TextFile.php');

@@ -36,7 +36,8 @@ class Filemanager {
                     let content = document.getElementById('save_file').value;
                     let file = saveFileButton.dataset.file;
 
-                    this.post('/filemanager?saveFile', {
+                    this.post('/filemanager/', {
+                        saveFile: true,
                         content: content,
                         file: file
                     });
@@ -75,18 +76,15 @@ class Filemanager {
     }
 
     async post(url, data = {}) {
+        let formData = new FormData();
+        for (const [key, value] of Object.entries(data)) {
+            formData.append(key, value);
+        }
+
         const response = await fetch(url, {
             method: 'POST',
-            mode: 'cors',
-            cache: 'no-cache',
-            credentials: 'same-origin',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            redirect: 'follow',
-            referrerPolicy: 'no-referrer',
-            body: JSON.stringify(data)
-        })
+            body: formData
+          })
         .then(res => res.json())
         .then(res => {
             if(res.error) {
