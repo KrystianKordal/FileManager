@@ -9,7 +9,7 @@ class Filemanager {
     }
 
     loadFiles() {
-        this.get("/filemanager")
+        this.get("/filemanager/")
             .then(function(res) {
                 document.querySelector(".filemanager-content").innerHTML = res.rendered_content;
             });
@@ -33,7 +33,7 @@ class Filemanager {
             if(e.target) {
                     let saveFileButton = document.getElementById('save_file');
                 if(e.target == saveFileButton) {
-                    let content = document.getElementById('save_file').value;
+                    let content = document.getElementById('file_content').value;
                     let file = saveFileButton.dataset.file;
 
                     this.post('/filemanager/', {
@@ -50,7 +50,7 @@ class Filemanager {
         if(element.dataset.editable == true) {
             let filename = element.dataset.file;
 
-            this.get(`/filemanager?loadContent=${filename}`)
+            this.get(`/filemanager/?loadContent=${filename}`)
                 .then(function(res) {
                     document.querySelector('.filemanager-content').innerHTML = res.content;
                 });

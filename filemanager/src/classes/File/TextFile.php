@@ -41,8 +41,21 @@ class TextFile extends File
      * 
      * @return bool|FMError True if saving was success full or FMError instance on failure
      */
-    public function save(string $content) : bool 
+    public function save(string $content)
     {
+        $handler = fopen($this->path, 'w');
+
+        if($handler === false) {
+            return new FMError("Error occured while opening file: $this->path");
+        }
+
+        $content = trim($content);
+        if(fwrite($handler, $content) === false) {
+            return new FMError("Error occured while saving content in file: $this->path");
+        }
+
+        fclose($handler);
+
         return true;
     }
 }

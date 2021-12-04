@@ -72,11 +72,7 @@ class FileManager
      */
     private function scanDir()
     {
-        set_error_handler(function() {});
-
         $content = scandir($this->dirPath);
-
-        restore_error_handler();
 
         return $content !== false? $this->removeDotsDirs($content) : new FMError("Cannot scan dir $this->dirPath");
     }

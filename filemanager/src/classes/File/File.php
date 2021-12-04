@@ -83,7 +83,7 @@ class File
      * 
      * @return bool|FMError True if saving was success full or FMError instance on failure
      */
-    public function save(string $content) : bool 
+    public function save(string $content)
     {
         return true;
     }
