@@ -83,17 +83,30 @@ body {
     margin: auto;
 }
 
-#save_file {
+.btn {
+    transition: all 300ms ease;
+    padding: 8px 20px;
     font-size: 18px;
     font-family: Roboto;
-    border: none;
-    padding: 6px 12px;
     cursor: pointer;
-    background-color: #00b389;
+    margin: 2px;
+    border-radius: 3px;
+    --color: #2fc4a1;
+}
+
+.btn:hover {
+    --color: #41d4b2;
+}
+
+.btn-primary {
+    border: none;
+    background-color: var(--color);
     color: white;
     transition: all 300ms ease;
 }
 
-#save_file:hover {
-    background-color: #37e7be;
+.btn-secondary {
+    border: solid 1px var(--color);
+    color: var(--color);
+    background-color: #FFF;
 }

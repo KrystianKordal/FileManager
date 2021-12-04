@@ -4,8 +4,8 @@ class Filemanager {
     }
 
     init() {
-        this.loadFiles();
         this.initEventListeners();
+        this.loadFiles();
     }
 
     loadFiles() {
@@ -41,6 +41,15 @@ class Filemanager {
                         content: content,
                         file: file
                     });
+                }
+            }
+        });
+
+        document.addEventListener('click',(e) => {
+            if(e.target) {
+                    let backButton = document.getElementById('back_from_edit');
+                if(e.target == backButton) {
+                    this.loadFiles();
                 }
             }
         });
