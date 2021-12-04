@@ -1,5 +1,6 @@
 class Filemanager {
     constructor() {
+        this.spinner = `<div class="loading-spinner hidden"><div></div><div></div></div>`;
         this.init();
     }
 
@@ -8,10 +9,25 @@ class Filemanager {
         this.loadFiles();
     }
 
+    showLoadingScreen() {
+        document.querySelector('.filemanager-content').innerHTML = this.spinner;
+        document.querySelector('.filemanager-content .loading-spinner').classList.remove('hidden');
+    }
+
+    hideLoadingScreen(callback) {
+        document.querySelector('.filemanager-content .loading-spinner').classList.add('hidden');
+        setTimeout(function() {
+            callback()
+        }, 300);
+    }
+
     loadFiles() {
+        this.showLoadingScreen();
         this.get("/filemanager/")
-            .then(function(res) {
-                document.querySelector(".filemanager-content").innerHTML = res.rendered_content;
+            .then((res) => {
+                this.hideLoadingScreen(() => {
+                    document.querySelector(".filemanager-content").innerHTML = res.rendered_content;
+                });
             });
     }
 
@@ -35,12 +51,12 @@ class Filemanager {
                 if(e.target == saveFileButton) {
                     let content = document.getElementById('file_content').value;
                     let file = saveFileButton.dataset.file;
-
+                    saveFileButton.classList.add('loading');
                     this.post('/filemanager/', {
                         saveFile: true,
                         content: content,
                         file: file
-                    });
+                    }, () => { saveFileButton.classList.remove('loading')});
                 }
             }
         });
@@ -56,11 +72,11 @@ class Filemanager {
     }
 
     loadContent(element) {
+        element.classList.add('loading');
         if(element.dataset.editable == true) {
             let filename = element.dataset.file;
-
             this.get(`/filemanager/?loadContent=${filename}`)
-                .then(function(res) {
+                .then((res) => {
                     document.querySelector('.filemanager-content').innerHTML = res.content;
                 });
         }
@@ -84,7 +100,7 @@ class Filemanager {
         }
     }
 
-    async post(url, data = {}) {
+    async post(url, data = {}, callback = () => {}) {
         let formData = new FormData();
         for (const [key, value] of Object.entries(data)) {
             formData.append(key, value);
@@ -99,7 +115,7 @@ class Filemanager {
             if(res.error) {
                 console.error(res.error);
             }
-
+            callback(res);
             return res;
         });
 

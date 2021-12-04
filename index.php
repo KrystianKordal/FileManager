@@ -15,7 +15,8 @@
         <div class="filemanager-header">
             File Manager
         </div>
-        <div class="filemanager-content"></div>
+        <div class="filemanager-content">
+        </div>
     </div>
     <script src="/assets/js/filemanager.js"></script>
 </body>

@@ -1,5 +1,7 @@
 body {
     font-family: Roboto, Arial, sans-serif;
+    --primary-color: #2fc4a1;
+    --primary-light: #41d4b2;
 }
 
 #filemanager {
@@ -12,7 +14,7 @@ body {
     max-height: 800px;
     border: solid 1px #dddddd;
     border-radius: 10px;
-    box-shadow: 5px 3px 20px #000000b0;
+    box-shadow: 3px 2px 20px #0000003d;
     align-content: flex-start;
     overflow-y: auto;
     overflow-x: hidden;
@@ -30,6 +32,7 @@ body {
     width: 100%;
     height: calc(100% - 50px);
     align-content: flex-start;
+    position: relative;
 }
 
 #filemanager .thumbnail img {
@@ -41,6 +44,15 @@ body {
 .file .filename {
     text-align: center;
     user-select: none;
+}
+
+.file.loading {
+    animation: loading-file 800ms ease infinite alternate;
+}
+
+@keyframes loading-file {
+    0% {opacity: 1}
+    100% {opacity: 0.3}
 }
 
 #filemanager .file {
@@ -69,8 +81,9 @@ body {
     height: 80%;
     resize: none;
     box-sizing: border-box;
-    border: solid 1px #999;
+    border: solid 1px #ddd;
     outline: none;
+    border-radius: 8px;
 }
 
 .pull-right {
@@ -91,11 +104,11 @@ body {
     cursor: pointer;
     margin: 2px;
     border-radius: 3px;
-    --color: #2fc4a1;
+    --color: var(--primary-color);
 }
 
 .btn:hover {
-    --color: #41d4b2;
+    --color: var(--primary-light);
 }
 
 .btn-primary {
@@ -105,8 +118,59 @@ body {
     transition: all 300ms ease;
 }
 
+.btn-primary.loading {
+    animation: btn-primary-loading 800ms ease infinite alternate;
+    cursor: wait;
+}
+
+@keyframes btn-primary-loading {
+    0% {opacity: 1}
+    100% {opacity: 0.3}
+}
+
 .btn-secondary {
     border: solid 1px var(--color);
     color: var(--color);
     background-color: #FFF;
+}
+
+.loading-spinner {
+    display: inline-block;
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    transition: all 300ms ease-in;
+  }
+  .loading-spinner div {
+    position: absolute;
+    border: 4px solid var(--primary-color);
+    opacity: 1;
+    border-radius: 50%;
+    animation: loading-spinner 1s cubic-bezier(0, 0.2, 0.8, 1) infinite;
+  }
+  .loading-spinner div:nth-child(2) {
+    animation-delay: -0.5s;
+  }
+  @keyframes loading-spinner {
+    0% {
+      top: 36px;
+      left: 36px;
+      width: 0;
+      height: 0;
+      opacity: 1;
+    }
+    100% {
+      top: 0px;
+      left: 0px;
+      width: 72px;
+      height: 72px;
+      opacity: 0;
+    }
+  }
+
+.loading-spinner.hidden {
+    opacity: 0;
 }
