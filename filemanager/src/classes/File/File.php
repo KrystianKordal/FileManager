@@ -37,7 +37,7 @@ class File
         $this->path = $path . $file;
 
         $pathinfo = pathinfo($this->path);
-        $this->ext = $pathinfo['extension'];
+        $this->ext = $pathinfo['extension'] ?? "";
         $this->name = $file;
 
         $this->size = filesize($path);
@@ -53,7 +53,7 @@ class File
      */
     protected function getThumbnail() : string
     {
-        return _IMG_PATH_ . 'document.png';
+        return _IMG_PATH_ . 'document.svg';
     }
 
     /**

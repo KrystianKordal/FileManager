@@ -69,6 +69,41 @@ class Filemanager {
                 }
             }
         });
+
+        document.addEventListener('click',(e) => {
+            if(e.target) {
+                    let uploadFile = document.getElementById('upload_file');
+                if(e.target == uploadFile) {
+                    let upload_input = document.getElementById('upload_file_input');
+                    let file = upload_input.files[0];
+                    if(file) {
+                        this.post('/filemanager/', {
+                            upload: 1,
+                            file: file,
+                        });
+                    }
+                }
+            }
+        });
+
+        document.addEventListener('click',(e) => {
+            if(e.target) {
+                    let toolbarUpload = document.getElementById('toolbar_upload');
+                if(e.target == toolbarUpload) {
+                    this.showUploadModal();
+                }
+            }
+        });
+
+        document.addEventListener('click',(e) => {
+            if(e.target) {
+                    let modal_overlay = document.querySelector('.filemanager_overlay');
+                    let upload_modal_close = document.querySelector('.upload-file-modal .modal-close-button');
+                if(e.target == modal_overlay || e.target == upload_modal_close) {
+                    this.hideUploadModal();
+                }
+            }
+        });
     }
 
     loadContent(element) {
@@ -80,6 +115,16 @@ class Filemanager {
                     document.querySelector('.filemanager-content').innerHTML = res.content;
                 });
         }
+    }
+
+    showUploadModal() {
+        document.querySelector('.filemanager_overlay').classList.add('shown');
+        document.querySelector('.upload-file-modal').classList.add('shown');
+    }
+
+    hideUploadModal() {
+        document.querySelector('.filemanager_overlay').classList.remove('shown');
+        document.querySelector('.upload-file-modal').classList.remove('shown');
     }
 
     async get(url) {

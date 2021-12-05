@@ -21,7 +21,6 @@ body {
 }
 
 .filemanager-header {
-    padding: 12px;
     border-bottom: solid 2px #ddd;
     font-size: 18px;
 }
@@ -30,7 +29,7 @@ body {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
-    height: calc(100% - 50px);
+    height: calc(100% - 90px);
     align-content: flex-start;
     position: relative;
 }
@@ -173,4 +172,101 @@ body {
 
 .loading-spinner.hidden {
     opacity: 0;
+}
+
+.filemanager-title {
+    border-bottom: solid 1px #ddd;
+    padding: 12px 8px 8px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.filemanager-toolbar {
+    width: 100%;
+    padding: 4px 6px;
+    box-sizing: border-box;
+}
+
+.toolbar-button {
+    cursor: pointer;
+    transition: all 100ms ease;
+}
+
+.toolbar-button:hover {
+    opacity: 0.8;
+}
+
+.filemanager-toolbar .toolbar-button img {
+    width: 28px;
+}
+
+.filemanager_overlay {
+    background-color: #000;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    display: none;
+    cursor: url('/assets/img/close.svg'), auto;
+    opacity: 0;
+    transition: all 300ms ease;
+}
+
+.filemanager_overlay.shown {
+    display: block;
+    opacity: 0.6;
+}
+
+.upload-file-modal {
+    position: absolute;
+    z-index: 2;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 60%;
+    height: 30%;
+    max-height: 300px;
+    max-width: 600px;
+    background-color: white;
+    box-sizing: border-box;
+    padding: 14px 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    display: none;
+    opacity: 0;
+    transition: all 300ms ease;
+}
+
+.upload-file-modal.shown {
+    opacity: 1;
+    display: block;
+}
+
+.modal-close {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+}
+
+.modal-close img {
+    width: 24px;
+    cursor: pointer;
+}
+
+.modal-close img:hover {
+    opacity: 0.5;
+}
+
+.upload-file-modal-content {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
 }

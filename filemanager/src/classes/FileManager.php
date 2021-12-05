@@ -140,7 +140,7 @@ class FileManager
      * @param string $filename Name of the file in which the content is to be written
      * @param string $content Content to be saved to the file
      * 
-     * @return bool|FMError true or FMError instance depending on the success of saving the content
+     * @return array Array with success or error on failure
      */
     public function saveFile(string $filename, string $content)
     {
@@ -153,5 +153,57 @@ class FileManager
         if($result instanceof FMError)
             return array('error' => $result->message);
         return array('success' => true);
+    }
+
+    /**
+     * Saves file in specific directory
+     * 
+     * @param array $file File details
+     * 
+     * @return array Array with success or error on failure
+     */
+    public function uploadFile(array $file)
+    {
+        if($file['size'] ?? 0 > 0) {
+            $filename = $this->getAvailableFilename($file['name'], _FILES_DIR_);
+
+            $success = move_uploaded_file($file['tmp_name'], _FILES_DIR_ . $filename);
+
+            if($success && file_exists(_FILES_DIR_ . $filename)) {
+                return array('success' => true);
+            }
+
+            return array('error' => "Error occured while uploading file");
+        }
+
+        return array('error' => "File is incorrect");
+    }
+
+    /**
+     * Finds available filename in specific directory
+     * 
+     * @param string $filename Filename with extension
+     * @param string $dir Directory in which the file is to be saved
+     * 
+     * @return string New available filename
+     */
+    private function getAvailableFilename($filename, $dir) {
+        $ext = pathinfo($filename, PATHINFO_EXTENSION) ?? "";
+        $name = pathinfo($filename, PATHINFO_FILENAME);
+        
+        $iterator = 1;
+        while(file_exists($dir . $filename)) {
+            $new_name = $name . " ($iterator)";
+
+            if($ext != "") {
+                $filename = $new_name . "." . $ext;
+            } else {
+                $filename = $new_name;
+            }
+
+            $iterator ++;
+        }
+
+        return $filename;
     }
 }

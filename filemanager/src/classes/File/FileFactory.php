@@ -20,7 +20,7 @@ class FileFactory
         if(!file_exists($filepath))
             return new FMError("File $filepath doesn't exists");
 
-        $extension = pathinfo($filepath)['extension'];
+        $extension = pathinfo($filepath)['extension'] ?? "";
         if ($extension == 'txt') { 
             return new TextFile($file, $path);
         } else {
