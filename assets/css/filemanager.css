@@ -43,6 +43,7 @@ body {
 .file .filename {
     text-align: center;
     user-select: none;
+    word-wrap: anywhere;
 }
 
 .file.loading {

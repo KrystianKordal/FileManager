@@ -80,6 +80,11 @@ class Filemanager {
                         this.post('/filemanager/', {
                             upload: 1,
                             file: file,
+                        }, (res) => {
+                            if(res.success) {
+                                this.hideUploadModal();
+                                this.loadFiles();
+                            }
                         });
                     }
                 }
