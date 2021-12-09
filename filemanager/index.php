@@ -3,6 +3,7 @@
 
     require_once(_CLASS_DIR_ . 'File/File.php');
     require_once(_CLASS_DIR_ . 'File/TextFile.php');
+    require_once(_CLASS_DIR_ . 'File/ImageFile.php');
     require_once(_CLASS_DIR_ . 'File/FileFactory.php');
 
     require_once(_CLASS_DIR_ . 'FileManager.php');

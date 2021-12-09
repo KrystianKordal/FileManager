@@ -23,6 +23,8 @@ class FileFactory
         $extension = pathinfo($filepath)['extension'] ?? "";
         if ($extension == 'txt') { 
             return new TextFile($file, $path);
+        } else if(in_array($extension, ['jpg', 'png', 'svg', 'webp'])) {
+            return new ImageFile($file, $path);
         } else {
             return new File($file, $path);
         }
