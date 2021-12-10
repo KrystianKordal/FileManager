@@ -35,6 +35,26 @@ class TextFile extends File
     }
 
     /**
+     * Renders file view from template
+     * 
+     * @return array Generated content
+     */
+    public function renderView()
+    {
+        $content = $this->getContent();
+
+        if($content instanceof FMError)
+            return array('error' => $content->message);
+
+        return array(
+            'content' => get_template('text_file_content', array(
+                'content' => $content,
+                'file' => $this
+            ))
+        );
+    }
+
+    /**
      * Saves content in file
      * 
      * @param string $content New file content

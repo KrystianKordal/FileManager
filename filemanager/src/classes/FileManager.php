@@ -104,17 +104,7 @@ class FileManager
         if($file instanceof FMError) 
             return $file;
 
-        $content = $file->getContent();
-
-        if($content instanceof FMError)
-            return array('error' => $content->message);
-
-        return array(
-            'content' => get_template('text_file_content', array(
-                'content' => $content,
-                'file' => $file
-            ))
-        );
+        return $file->renderView();
     }
 
     /**
