@@ -32,81 +32,51 @@ class Filemanager {
     }
 
     initEventListeners() {
-        let self = this;
-        document.addEventListener('click',(e) => {
-            let files = document.querySelectorAll('.file');
-            if(e.target) {
-                files.forEach(function(file) {
-                    if(file.contains(e.target) || e.target == file) {
-                        self.loadContent(file);
+        this.onClick('.file', (file) => {this.loadContent(file)});
+
+        this.onClick('#save_file', function() {
+            let content = document.getElementById('file_content').value;
+            let file = saveFileButton.dataset.file;
+            saveFileButton.classList.add('loading');
+            this.post('/filemanager/', {
+                saveFile: true,
+                content: content,
+                file: file
+            }, () => { saveFileButton.classList.remove('loading')});
+        });
+
+        this.onClick('#back_from_edit', () => {this.loadFiles()});
+
+        this.onClick('#upload_file', function() {
+            let upload_input = document.getElementById('upload_file_input');
+            let file = upload_input.files[0];
+            if(file) {
+                this.post('/filemanager/', {
+                    upload: 1,
+                    file: file,
+                }, (res) => {
+                    if(res.success) {
+                        this.hideUploadModal();
+                        this.loadFiles();
                     }
                 });
             }
-        });
+        })
 
-        document.addEventListener('click',(e) => {
-            let files = document.querySelectorAll('.file');
-            if(e.target) {
-                    let saveFileButton = document.getElementById('save_file');
-                if(e.target == saveFileButton) {
-                    let content = document.getElementById('file_content').value;
-                    let file = saveFileButton.dataset.file;
-                    saveFileButton.classList.add('loading');
-                    this.post('/filemanager/', {
-                        saveFile: true,
-                        content: content,
-                        file: file
-                    }, () => { saveFileButton.classList.remove('loading')});
-                }
-            }
-        });
+        this.onClick('#toolbar_upload', () => {this.showUploadModal()});
+        this.onClick('.filemanager_overlay', () => {this.showUploadModal()});
+        this.onClick('.upload-file-modal .modal-close-button', () => {this.hideUploadModal()});
+    }
 
+    onClick(selector, callback) {
         document.addEventListener('click',(e) => {
             if(e.target) {
-                    let backButton = document.getElementById('back_from_edit');
-                if(e.target == backButton) {
-                    this.loadFiles();
-                }
-            }
-        });
-
-        document.addEventListener('click',(e) => {
-            if(e.target) {
-                    let uploadFile = document.getElementById('upload_file');
-                if(e.target == uploadFile) {
-                    let upload_input = document.getElementById('upload_file_input');
-                    let file = upload_input.files[0];
-                    if(file) {
-                        this.post('/filemanager/', {
-                            upload: 1,
-                            file: file,
-                        }, (res) => {
-                            if(res.success) {
-                                this.hideUploadModal();
-                                this.loadFiles();
-                            }
-                        });
+                let elements = document.querySelectorAll(selector);
+                elements.forEach(function(element) {
+                    if(e.target == element || element.contains(e.target)) {
+                        callback(element);
                     }
-                }
-            }
-        });
-
-        document.addEventListener('click',(e) => {
-            if(e.target) {
-                    let toolbarUpload = document.getElementById('toolbar_upload');
-                if(e.target == toolbarUpload) {
-                    this.showUploadModal();
-                }
-            }
-        });
-
-        document.addEventListener('click',(e) => {
-            if(e.target) {
-                    let modal_overlay = document.querySelector('.filemanager_overlay');
-                    let upload_modal_close = document.querySelector('.upload-file-modal .modal-close-button');
-                if(e.target == modal_overlay || e.target == upload_modal_close) {
-                    this.hideUploadModal();
-                }
+                })
             }
         });
     }

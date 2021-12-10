@@ -8,6 +8,7 @@
 
     require_once(_CLASS_DIR_ . 'FileManager.php');
 
+    require_once(_CLASS_DIR_ . 'Dir.php');
     require_once(_CLASS_DIR_ . 'FMError.php');
 
     require_once(_HELPERS_DIR_ . 'template.php');
