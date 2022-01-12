@@ -7,6 +7,16 @@
 class TextFile extends File 
 {
     /**
+     * {@inheritdoc}
+     */
+    public function __construct(string $file, string $path)
+    {
+        parent::__construct($file, $path);
+        
+        $this->edit_template = "text_file_content";
+    }
+
+    /**
      * Returns whether the file is editable
      * 
      * @return bool Is file editable
@@ -35,22 +45,18 @@ class TextFile extends File
     }
 
     /**
-     * Renders file view from template
-     * 
-     * @return array Generated content
+     * {@inheritdoc}
      */
-    public function renderView()
+
+    protected function getEditTemplateVars(): array
     {
         $content = $this->getContent();
-
         if($content instanceof FMError)
             return array('error' => $content->message);
 
         return array(
-            'content' => get_template('text_file_content', array(
-                'content' => $content,
-                'file' => $this
-            ))
+            'content' => $content,
+            'file' => $this
         );
     }
 

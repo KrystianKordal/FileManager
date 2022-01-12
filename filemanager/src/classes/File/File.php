@@ -24,6 +24,9 @@ class File
     /** @var boolean Is file editable */
     public $editable;
 
+    /** @var string|false If editable, it contains the name of the file with the editing template */
+    public $edit_template = false;
+
     /**
      * Class constructor
      * 
@@ -74,6 +77,39 @@ class File
     public function getContent() : string 
     {
         return "";
+    }
+
+    /**
+     * Renders file view from template
+     * 
+     * @return array Generated content
+     */
+    public function renderView()
+    {
+        $params = $this->getEditTemplateVars();
+
+        if ($params instanceof FMError) {
+            return $params;
+        }
+
+        if ($this->editable) {
+            return array(
+                'content' => get_template($this->edit_template, $params)
+            );
+        } 
+        return array(
+            'content' => get_template('unavailable_file_content', $params)
+        );
+    }
+
+    /**
+     * Returns variables needed to render template
+     * 
+     * @return array Array with template variables
+     */
+    protected function getEditTemplateVars() : array
+    {
+        return array();
     }
 
     /**

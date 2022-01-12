@@ -7,6 +7,16 @@
 class ImageFile extends File 
 {
     /**
+     * {@inheritdoc}
+     */
+    public function __construct(string $file, string $path)
+    {
+        parent::__construct($file, $path);
+        
+        $this->edit_template = "image_file_content";
+    }
+
+    /**
      * Returns thumbnail depends on image content
      * 
      * @return string Thumbnail src
@@ -37,17 +47,14 @@ class ImageFile extends File
     }
 
     /**
-     * Renders file view from template
-     * 
-     * @return array Generated content
+     * {@inheritdoc}
      */
-    public function renderView()
+
+    protected function getEditTemplateVars(): array
     {
         return array(
-            'content' => get_template('image_file_content', array(
-                'url' => $this->getPath(),
-                'file' => $this
-            ))
+            'url' => $this->getPath(),
+            'file' => $this
         );
     }
 }
