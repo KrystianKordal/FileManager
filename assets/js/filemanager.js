@@ -34,7 +34,8 @@ class Filemanager {
     initEventListeners() {
         this.onClick('.file', (file) => {this.loadContent(file)});
 
-        this.onClick('#save_file', function() {
+        this.onClick('#save_file', () => {
+            let saveFileButton = document.getElementById('save_file');
             let content = document.getElementById('file_content').value;
             let file = saveFileButton.dataset.file;
             saveFileButton.classList.add('loading');
@@ -47,7 +48,7 @@ class Filemanager {
 
         this.onClick('#back_from_edit', () => {this.loadFiles()});
 
-        this.onClick('#upload_file', function() {
+        this.onClick('#upload_file', () => {
             let upload_input = document.getElementById('upload_file_input');
             let file = upload_input.files[0];
             if(file) {
@@ -83,13 +84,11 @@ class Filemanager {
 
     loadContent(element) {
         element.classList.add('loading');
-        if(element.dataset.editable == true) {
-            let filename = element.dataset.file;
-            this.get(`/filemanager/?loadContent=${filename}`)
-                .then((res) => {
-                    document.querySelector('.filemanager-content').innerHTML = res.content;
-                });
-        }
+        let filename = element.dataset.file;
+        this.get(`/filemanager/?loadContent=${filename}`)
+            .then((res) => {
+                document.querySelector('.filemanager-content').innerHTML = res.content;
+            });
     }
 
     showUploadModal() {
