@@ -6,8 +6,8 @@
         ini_set('display_startup_errors', 1);
         error_reporting(E_ALL);
     }
-    
-    define('_ROOT_DIR_', $_SERVER['DOCUMENT_ROOT'] . '/');
+
+    define('_ROOT_DIR_', __DIR__ . '/');
     define('_APP_DIR_', _ROOT_DIR_ . 'filemanager/');
     define('_SRC_DIR_', _APP_DIR_ . 'src/');
     define('_CLASS_DIR_', _SRC_DIR_ . 'classes/');
