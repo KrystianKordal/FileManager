@@ -1,13 +1,13 @@
 <?php
-    define('_FMDEBUG_', true);
+    define('_FM_DEBUG_', true);
 
-    if(_FMDEBUG_) {
+    if(_FM_DEBUG_) {
         ini_set('display_errors', 1);
         ini_set('display_startup_errors', 1);
         error_reporting(E_ALL);
     }
 
-    define('_ROOT_DIR_', __DIR__ . '/');
+    define('_ROOT_DIR_', dirname(__DIR__) . '/');
     define('_APP_DIR_', _ROOT_DIR_ . 'filemanager/');
     define('_SRC_DIR_', _APP_DIR_ . 'src/');
     define('_CLASS_DIR_', _SRC_DIR_ . 'classes/');

@@ -28,6 +28,9 @@ class FileManager
     public function getDirContent() : array
     {
         $dir = Dir::open($this->dirPath);
+        if($dir instanceof FMError)
+            return array('error' => $dir->message);
+
         $dirContent = $dir->getContent();
         if($dirContent instanceof FMError)
             return array('error' => $dirContent->message);
