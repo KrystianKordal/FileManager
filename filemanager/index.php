@@ -5,7 +5,7 @@
     $fileManager = new FileManager(_FILES_DIR_);
 
     if(isset($_GET['loadContent'])) {
-        echo json_encode($fileManager->getFileContent($_GET['loadContent']));
+        echo json_encode($fileManager->getContent($_GET['loadContent']));
     } else if(isset($_POST['saveFile'])) {
         echo json_encode($fileManager->saveFile($_POST['file'], $_POST['content']));
     } else if(isset($_POST['upload'])) {

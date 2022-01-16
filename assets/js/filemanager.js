@@ -87,7 +87,7 @@ class Filemanager {
         let filename = element.dataset.file;
         this.get(`/filemanager/?loadContent=${filename}`)
             .then((res) => {
-                document.querySelector('.filemanager-content').innerHTML = res.content;
+                document.querySelector('.filemanager-content').innerHTML = res.rendered_content;
             });
     }
 

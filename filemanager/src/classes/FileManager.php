@@ -7,17 +7,25 @@
 
 class FileManager 
 {
-    /** @var string Path to main directory */
+    /** @var string Path to directory with files */
+    private $dirFullPath;
+
+    /** @var string Path to parent directory of directory with files */
     private $dirPath;
+    
+    /** @var string Directory name */
+    private $dirName;
 
     /**
      * Class constructor
      * 
      * @param string $dirPath Path to main directory
      */
-    public function __construct($dirPath) 
+    public function __construct($path) 
     {
-        $this->dirPath = $dirPath;
+        $this->dirFullPath = $path;
+        $this->dirPath = dirname($path);
+        $this->dirName = basename($path);
     }
 
     /**
@@ -27,7 +35,7 @@ class FileManager
      */
     public function getDirContent() : array
     {
-        $dir = Dir::open($this->dirPath);
+        $dir = Dir::open($this->dirName, $this->dirPath);
         if($dir instanceof FMError)
             return array('error' => $dir->message);
 
@@ -35,37 +43,44 @@ class FileManager
         if($dirContent instanceof FMError)
             return array('error' => $dirContent->message);
 
-        $nodes = $this->createFileNodes($dirContent, $this->dirPath);
+        $nodes = $this->createNodes($dirContent, $this->dirFullPath);
         if($nodes instanceof FMError) {
             return array('error' => $nodes->message);
         }
 
+        $rendered_content = get_template('files', array('files' => $nodes));
         return array(
-            'rendered_content' => get_template('files', array('files' => $nodes))
+            'rendered_content' => $rendered_content
         );
     }
 
     /**
-     * Creates instances of File object
+     * Creates instances of File or Dir objects
      * 
      * @param array $dirContent Array with names of file system nodes
      * 
-     * @return array|FMError Array with File instances or FMError instance if instantiate file object failed
+     * @return array|FMError Array with File and Dir instances or FMError instance if instantiate node object failed
      */
-    private function createFileNodes(array $dirContent)
+    private function createNodes(array $dirContent)
     {
-        $factory = new FileFactory();
+        $factory = new FSNodeFactory();
 
-        $nodes = array();
+        $files = array();
+        $dirs = array();
         foreach($dirContent as $filename) {
-            $node = $factory->createFile($filename, $this->dirPath);
+            $node = $factory->createNode($filename, $this->dirFullPath);
 
             if($node instanceof FMError)
                 return $node;
-            
-            $nodes[] = $node;
+
+            if($node instanceof Dir) {
+                $dirs[] = $node;
+            } else {
+                $files[] = $node;
+            }
         }
 
+        $nodes = array_merge($dirs, $files);
         return $nodes;
     }
 
@@ -76,10 +91,17 @@ class FileManager
      * 
      * @return array|FMError Array with file content or FMError instance
      */
-    public function getFileContent(string $filename) : array
+    public function getContent(string $filename) : array
     {
-        $factory = new FileFactory();
-        $file = $factory->createFile($filename, $this->dirPath);
+        if (is_dir(implode('/', [$this->dirFullPath, $filename])) ) {
+            $this->dirPath = $this->dirFullPath;
+            $this->dirName = $filename;
+            $this->dirFullPath = implode('/', [$this->dirPath, $filename]);
+            return $this->getDirContent();
+        }
+
+        $factory = new FSNodeFactory();
+        $file = $factory->createNode($filename, $this->dirFullPath);
         if($file instanceof FMError) 
             return $file;
 
@@ -96,8 +118,8 @@ class FileManager
      */
     public function saveFile(string $filename, string $content)
     {
-        $factory = new FileFactory();
-        $file = $factory->createFile($filename, $this->dirPath);
+        $factory = new FSNodeFactory();
+        $file = $factory->createNode($filename, $this->dirFullPath);
         if($file instanceof FMError) 
             return array('error' => $file->message);
 
@@ -118,7 +140,7 @@ class FileManager
     public function uploadFile(array $file)
     {
         if($file['size'] ?? 0 > 0) {
-            $dir = Dir::open($this->dirPath);
+            $dir = Dir::open($this->dirName, $this->dirPath);
             $filename = $dir->getAvailableFilename($file['name'], _FILES_DIR_);
 
             $success = move_uploaded_file($file['tmp_name'], _FILES_DIR_ . $filename);

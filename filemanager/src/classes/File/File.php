@@ -70,16 +70,6 @@ class File
     }
 
     /**
-     * Returns content from file
-     * 
-     * @return string File content
-     */
-    public function getContent() : string 
-    {
-        return "";
-    }
-
-    /**
      * Renders file view from template
      * 
      * @return array Generated content
@@ -98,7 +88,7 @@ class File
             );
         } 
         return array(
-            'content' => get_template('unavailable_file_content', $params)
+            'rendered_content' => get_template('unavailable_file_content', $params)
         );
     }
 

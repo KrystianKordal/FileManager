@@ -15,20 +15,28 @@ class Dir
      * 
      * @return Dir|FMError new Dir instance or FMError if not exists
      */
-    public static function open($path) 
+    public static function open($name, $path) 
     {
-        if(file_exists($path) && is_dir($path))
-            return new self($path);
+        $fullPath = implode("/", [$path, $name]);
+        if(file_exists($fullPath) && is_dir($fullPath))
+            return new self($name, $path);
         
         return new FMError("Directory doesn't exists");
     }
 
     /**
      * Stores directory path
+     * 
+     * @param string $name Name of directory
+     * @param string $path Path to directory
      */
-    public function __construct($path) 
+    public function __construct(string $name, string $path) 
     {
+        $this->name = $name;
         $this->path = $path;
+        $this->fullPath = implode("/", [$path, $name]);
+
+        $this->thumbnail = $this->getThumbnail();
     }
 
     /**
@@ -38,9 +46,19 @@ class Dir
      */
     public function getContent()
     {
-        $content = scandir($this->path);
+        $content = scandir($this->fullPath);
 
-        return $content !== false? $this->removeDotsDirs($content) : new FMError("Cannot scan dir $this->path");
+        return $content !== false? $this->removeDotsDirs($content) : new FMError("Cannot scan dir $this->fullPath");
+    }
+
+    /**
+     * Returns thumbnail of file
+     * 
+     * @return string Thumbnail src
+     */
+    protected function getThumbnail() : string
+    {
+        return _IMG_PATH_ . 'folder.svg';
     }
 
     /**
