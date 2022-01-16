@@ -13,7 +13,7 @@ class ImageFile extends File
     {
         parent::__construct($file, $path);
         
-        $this->edit_template = "image_file_content";
+        $this->template = "image_file_content";
     }
 
     /**
@@ -37,20 +37,10 @@ class ImageFile extends File
     }
 
     /**
-     * Returns whether the file is editable
-     * 
-     * @return bool Is file editable
-     */
-    protected function isEditable() : bool
-    {
-        return true;
-    }
-
-    /**
      * {@inheritdoc}
      */
 
-    protected function getEditTemplateVars(): array
+    protected function getTemplateVars(): array
     {
         return array(
             'url' => $this->getPath(),

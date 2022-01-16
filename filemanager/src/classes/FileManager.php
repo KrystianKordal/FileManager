@@ -35,53 +35,10 @@ class FileManager
      */
     public function getDirContent() : array
     {
-        $dir = Dir::open($this->dirName, $this->dirPath);
-        if($dir instanceof FMError)
-            return array('error' => $dir->message);
-
-        $dirContent = $dir->getContent();
-        if($dirContent instanceof FMError)
-            return array('error' => $dirContent->message);
-
-        $nodes = $this->createNodes($dirContent, $this->dirFullPath);
-        if($nodes instanceof FMError) {
-            return array('error' => $nodes->message);
-        }
-
-        $rendered_content = get_template('files', array('files' => $nodes));
-        return array(
-            'rendered_content' => $rendered_content
-        );
-    }
-
-    /**
-     * Creates instances of File or Dir objects
-     * 
-     * @param array $dirContent Array with names of file system nodes
-     * 
-     * @return array|FMError Array with File and Dir instances or FMError instance if instantiate node object failed
-     */
-    private function createNodes(array $dirContent)
-    {
         $factory = new FSNodeFactory();
 
-        $files = array();
-        $dirs = array();
-        foreach($dirContent as $filename) {
-            $node = $factory->createNode($filename, $this->dirFullPath);
-
-            if($node instanceof FMError)
-                return $node;
-
-            if($node instanceof Dir) {
-                $dirs[] = $node;
-            } else {
-                $files[] = $node;
-            }
-        }
-
-        $nodes = array_merge($dirs, $files);
-        return $nodes;
+        $dir = $factory->createNode($this->dirName, $this->dirPath);
+        return $dir->renderView();
     }
 
     /**

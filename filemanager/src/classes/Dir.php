@@ -3,27 +3,8 @@
 /**
  * Class representing directory
  */
-class Dir
+class Dir extends FSNode
 {
-    /** @var string Path to current directory */
-    private $path;
-
-    /**
-     * Returns new Dir object if exists
-     * 
-     * @param string $path Directory location
-     * 
-     * @return Dir|FMError new Dir instance or FMError if not exists
-     */
-    public static function open($name, $path) 
-    {
-        $fullPath = implode("/", [$path, $name]);
-        if(file_exists($fullPath) && is_dir($fullPath))
-            return new self($name, $path);
-        
-        return new FMError("Directory doesn't exists");
-    }
-
     /**
      * Stores directory path
      * 
@@ -32,11 +13,55 @@ class Dir
      */
     public function __construct(string $name, string $path) 
     {
-        $this->name = $name;
-        $this->path = $path;
-        $this->fullPath = implode("/", [$path, $name]);
+        parent::__construct($name, $path);
+        $this->template = "files";
+    }
 
-        $this->thumbnail = $this->getThumbnail();
+    /**
+     * {@inheritdoc}
+     */
+    protected function getTemplateVars() : array
+    {
+        $dirContent = $this->getContent();
+        if($dirContent instanceof FMError)
+            return $dirContent;
+
+        $nodes = $this->createNodes($dirContent);
+        if($nodes instanceof FMError) {
+            return $nodes;
+        }
+
+        return array('files' => $nodes);
+    }
+
+    /**
+     * Creates instances of File or Dir objects
+     * 
+     * @param array $dirContent Array with names of file system nodes
+     * 
+     * @return array|FMError Array with File and Dir instances or FMError instance if instantiate node object failed
+     */
+    private function createNodes(array $dirContent)
+    {
+        $factory = new FSNodeFactory();
+
+        $files = array();
+        $dirs = array();
+        foreach($dirContent as $filename) {
+            $node = $factory->createNode($filename, $this->fullPath);
+
+            if($node instanceof FMError)
+                return $node;
+
+            if($node instanceof Dir) {
+                $dirs[] = $node;
+            } else {
+                $files[] = $node;
+            }
+        }
+
+        $nodes = array_merge($dirs, $files);
+        return $nodes;
     }
 
     /**
