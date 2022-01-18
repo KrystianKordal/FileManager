@@ -97,7 +97,8 @@ class FileManager
     public function uploadFile(array $file)
     {
         if($file['size'] ?? 0 > 0) {
-            $dir = Dir::open($this->dirName, $this->dirPath);
+            $factory = new FSNodeFactory();
+            $dir = $factory->createDir($this->dirPath, $this->dirName);
             $filename = $dir->getAvailableFilename($file['name'], _FILES_DIR_);
 
             $success = move_uploaded_file($file['tmp_name'], _FILES_DIR_ . $filename);

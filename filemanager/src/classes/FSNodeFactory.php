@@ -7,6 +7,8 @@ class FSNodeFactory
      * 
      * @param string $name Name of file system node
      * @param string $path Path to node
+     * 
+     * @return FSNode file system node instance
      */
     public function createNode(string $name, string $path)
     {
@@ -44,7 +46,7 @@ class FSNodeFactory
      * @param string $file Name of file
      * @param string $path Path to file
      * 
-     * @return File|FMError File instance or FMError instance
+     * @return Dir|FMError File instance or FMError instance
      */
     public function createDir(string $name, string $path)
     {
