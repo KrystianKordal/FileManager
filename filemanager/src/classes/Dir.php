@@ -5,6 +5,9 @@
  */
 class Dir extends FSNode
 {
+    /** @var string Relative path used in src to files */
+    static $relativePath;
+
     /**
      * Stores directory path
      * 
@@ -15,6 +18,26 @@ class Dir extends FSNode
     {
         parent::__construct($name, $path);
         $this->template = "files";
+
+        if(empty(self::$relativePath)) {
+            $this->setRelativePath();
+        }
+    }
+
+    /**
+     * Initializes a static variable with relative path to this directory
+     */
+    public function setRelativePath()
+    {
+        $relativePath = str_replace(_FILES_DIR_, "", $this->fullPath . "/");
+        $relativePath = _FILES_PATH_ . $relativePath;
+
+        self::$relativePath = $relativePath;
+    }
+
+    public static function getRelativePath()
+    {
+        return self::$relativePath;
     }
 
     /**
@@ -60,6 +83,10 @@ class Dir extends FSNode
             }
         }
 
+        if ($this->fullPath . "/" != _FILES_DIR_) {
+            array_unshift($dirs, $this->createBackNode());
+        }
+
         $nodes = array_merge($dirs, $files);
         return $nodes;
     }
@@ -73,17 +100,37 @@ class Dir extends FSNode
     {
         $content = scandir($this->fullPath);
 
-        return $content !== false? $this->removeDotsDirs($content) : new FMError("Cannot scan dir $this->fullPath");
+        if ($content === false) {
+            return new FMError("Cannot scan dir $this->fullPath");
+        }
+
+        $content = $this->removeDotsDirs($content);
+
+        return $content;
     }
 
     /**
-     * Returns thumbnail of file
+     * Creates a directory that is the parent of the current directory
      * 
-     * @return string Thumbnail src
+     * @return Dir Parent dir
      */
-    protected function getThumbnail() : string
+    private function createBackNode()
     {
-        return _IMG_PATH_ . 'folder.svg';
+        $factory = new FSNodeFactory();
+        $fullPath = $this->path;
+        $name = basename($fullPath);
+        $path = dirname($fullPath);
+
+        $dir = $factory->createDir($name, $path);
+        if ($fullPath . "/" == _FILES_DIR_) {
+            $dir->dirName = "/";
+        } else {
+            $dir->dirName = $dir->name;
+        }
+
+        $dir->name = "..";
+        
+        return $dir;
     }
 
     /**
@@ -98,6 +145,16 @@ class Dir extends FSNode
         return array_values(
             array_diff($content , ['..', '.'])
         );
+    }
+
+    /**
+     * Returns thumbnail of file
+     * 
+     * @return string Thumbnail src
+     */
+    protected function getThumbnail() : string
+    {
+        return _IMG_PATH_ . 'folder.svg';
     }
 
     /**

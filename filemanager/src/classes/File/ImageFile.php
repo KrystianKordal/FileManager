@@ -3,7 +3,6 @@
 /**
  * File containing image
  */
-
 class ImageFile extends File 
 {
     /**
@@ -33,7 +32,7 @@ class ImageFile extends File
      */
     protected function getPath() : string
     {
-        return _FILES_PATH_ . $this->name;
+        return Dir::getRelativePath() . $this->name;
     }
 
     /**

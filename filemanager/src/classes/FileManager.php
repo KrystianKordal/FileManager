@@ -31,13 +31,23 @@ class FileManager
     /**
      * Returns content of specific directory
      * 
+     * @param string $name If passed, it gets the contents directory from the variable
+     * 
      * @return array An associative array with rendered files list or error
      */
-    public function getDirContent() : array
+    public function getDirContent(string $name = null) : array
     {
         $factory = new FSNodeFactory();
 
-        $dir = $factory->createNode($this->dirName, $this->dirPath);
+        if(empty($name)) {
+            $dir = $factory->createNode($this->dirName, $this->dirPath);
+        } else {
+            $fullPath = _FILES_DIR_ . $name;
+            $dirPath = dirname($fullPath);
+            $dirName = basename($fullPath);
+            $dir = $factory->createNode($dirName, $dirPath);
+        }
+
         return $dir->renderView();
     }
 
@@ -54,7 +64,7 @@ class FileManager
             $this->dirPath = $this->dirFullPath;
             $this->dirName = $filename;
             $this->dirFullPath = implode('/', [$this->dirPath, $filename]);
-            return $this->getDirContent();
+            return $this->getDirContent($filename);
         }
 
         $factory = new FSNodeFactory();
