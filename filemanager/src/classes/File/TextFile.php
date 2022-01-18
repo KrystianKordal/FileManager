@@ -23,10 +23,10 @@ class TextFile extends File
      */
     public function getContent() : string
     {
-        $file = fopen($this->path, 'r');
+        $file = fopen($this->fullPath, 'r');
 
         if($file === false) 
-            return new FMError("Cannot open file $this->path");
+            return new FMError("Cannot open file $this->fullPath");
             
         $content = fread($file, $this->size);
         fclose($file);
@@ -59,15 +59,15 @@ class TextFile extends File
      */
     public function save(string $content)
     {
-        $handler = fopen($this->path, 'w');
+        $handler = fopen($this->fullPath, 'w');
 
         if($handler === false) {
-            return new FMError("Error occured while opening file: $this->path");
+            return new FMError("Error occured while opening file: $this->fullPath");
         }
 
         $content = trim($content);
         if(fwrite($handler, $content) === false) {
-            return new FMError("Error occured while saving content in file: $this->path");
+            return new FMError("Error occured while saving content in file: $this->fullPath");
         }
 
         fclose($handler);

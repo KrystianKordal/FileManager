@@ -22,10 +22,6 @@ class Dir extends FSNode
         parent::__construct($name, $path);
         $this->template = "files";
         $this->dirName = $this->getDirName();
-
-        if(empty(self::$relativePath)) {
-            $this->setRelativePath();
-        }
     }
 
     public function getDirName()
@@ -35,17 +31,48 @@ class Dir extends FSNode
     }
 
     /**
-     * Initializes a static variable with relative path to this directory
+     * Returns relative path to file
+     * 
+     * @param string $fullPath Absolute path to file
+     * 
+     * @return string Relative path to file from files directory
      */
-    public function setRelativePath()
+    public static function getRelativePath(string $fullPath) : string
     {
-        $relativePath = str_replace(_FILES_DIR_, "", $this->fullPath . "/");
+
+        return str_replace(_FILES_DIR_, "", $fullPath . is_dir($fullPath)? "/" : "");
+    }
+
+    /**
+     * Returns relative path to parent directory of object in variable
+     * 
+     * @param FSNode $obj Object in needed directory
+     * 
+     * @return string Relative path to parent directory
+     */
+    public static function getParentDirRelativePath(FSNode $obj)
+    {
+        $relativePath = self::getRelativePath($obj->fullPath);
+        return str_replace("/" . $obj->name, "", $relativePath);
+    }
+
+    /**
+     * Initializes a static variable with relative path to this directory
+     * 
+     * @param string $fullPath Path to current directory
+     */
+    public static function setRelativePath(string $fullPath)
+    {
+        $relativePath = str_replace(_FILES_DIR_, "", $fullPath . "/");
+        if ($relativePath == "/") {
+            $relativePath = "";
+        }
         $relativePath = _FILES_PATH_ . $relativePath;
 
         self::$relativePath = $relativePath;
     }
 
-    public static function getRelativePath()
+    public static function getRelativeUrl()
     {
         return self::$relativePath;
     }
@@ -93,7 +120,12 @@ class Dir extends FSNode
             }
         }
 
-        if ($this->fullPath . "/" != _FILES_DIR_) {
+        $path_to_compare = $this->fullPath;
+        if($path_to_compare[strlen($path_to_compare) - 1] != "/") {
+            $path_to_compare .= "/";
+        } 
+        
+        if ($path_to_compare != _FILES_DIR_) {
             array_unshift($dirs, $this->createBackNode());
         }
 

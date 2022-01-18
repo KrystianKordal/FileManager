@@ -32,7 +32,7 @@ class ImageFile extends File
      */
     protected function getPath() : string
     {
-        return Dir::getRelativePath() . $this->name;
+        return Dir::getRelativeUrl() . $this->name;
     }
 
     /**
@@ -43,7 +43,8 @@ class ImageFile extends File
     {
         return array(
             'url' => $this->getPath(),
-            'file' => $this
+            'file' => $this,
+            'back_path' => Dir::getParentDirRelativePath($this)
         );
     }
 }

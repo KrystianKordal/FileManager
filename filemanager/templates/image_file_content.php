@@ -3,6 +3,6 @@
         <img src="<?= $url ?>">
     </div>
     <div class="pull-right button-container">
-            <input type="button" id="back_from_edit" class="btn btn-secondary" value="Back">
+            <input type="button" id="back_from_edit" class="btn btn-secondary" value="Back" data-path="<?= $back_path ?>">
     </div>
 </div>

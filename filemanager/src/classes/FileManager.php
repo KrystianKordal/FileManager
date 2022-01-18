@@ -26,6 +26,8 @@ class FileManager
         $this->dirFullPath = $path;
         $this->dirPath = dirname($path);
         $this->dirName = basename($path);
+
+        Dir::setRelativePath($this->dirFullPath);
     }
 
     /**
@@ -60,7 +62,12 @@ class FileManager
      */
     public function getContent(string $filename) : array
     {
-        if (is_dir(implode('/', [$this->dirFullPath, $filename])) ) {
+        $slash_to_remove_count = 1;
+        if ($filename[0] == "/") {
+            $filename = str_replace("/", "", $filename, $slash_to_remove_count);
+        }
+        $node = $this->dirFullPath . $filename;
+        if (is_dir($node) ) {
             $this->dirPath = $this->dirFullPath;
             $this->dirName = $filename;
             $this->dirFullPath = implode('/', [$this->dirPath, $filename]);
@@ -70,7 +77,7 @@ class FileManager
         $factory = new FSNodeFactory();
         $file = $factory->createNode($filename, $this->dirFullPath);
         if($file instanceof FMError) 
-            return $file;
+            return array('error' => $file);
 
         return $file->renderView();
     }

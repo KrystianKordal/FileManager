@@ -25,6 +25,10 @@ class FSNode
      */
     public function __construct(string $name, string $path)
     {
+        if($path[strlen($path) - 1] == "/") {
+            $path = substr($path, 0, -1);
+        } 
+
         $this->fullPath = implode("/", [$path, $name]);
         $this->path = $path;
         $this->name = $name;
