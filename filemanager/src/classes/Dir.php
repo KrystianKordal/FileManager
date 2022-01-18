@@ -8,6 +8,9 @@ class Dir extends FSNode
     /** @var string Relative path used in src to files */
     static $relativePath;
 
+    /** @var string Relative path used in src to files */
+    public $dirName;
+
     /**
      * Stores directory path
      * 
@@ -18,10 +21,17 @@ class Dir extends FSNode
     {
         parent::__construct($name, $path);
         $this->template = "files";
+        $this->dirName = $this->getDirName();
 
         if(empty(self::$relativePath)) {
             $this->setRelativePath();
         }
+    }
+
+    public function getDirName()
+    {
+        $path = str_replace(_FILES_DIR_, "", $this->fullPath . "/");
+        return $path;
     }
 
     /**
